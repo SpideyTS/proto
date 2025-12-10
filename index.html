@@ -1116,6 +1116,55 @@
   }, options);
 
   counters.forEach(c => observer.observe(c));
+        <ul>
+          <li>إدارة الحساب</li>
+          <li>التحكم في الخصوصية</li>
+          <li>الإشعارات والتذكيرات</li>
+          <li>الوضع الداكن / الفاتح (قريبًا)</li>
+        </ul>
+        <p style="margin-top:1rem;">
+          هذه الصفحة هنا فقط كتجربة للحكام — لاحقًا ستُقسم إلى تبويبات داخلية.
+        </p>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+// ========== Navigation System ==========
+const navButtons = document.querySelectorAll("[data-target]");
+const sections = document.querySelectorAll("section");
+
+navButtons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.target;
+
+    sections.forEach(sec =>
+      sec.classList.remove("active-section")
+    );
+
+    document.getElementById(target).classList.add("active-section");
+
+    // Scroll to top each switch
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+});
+
+// ========== Demo Interactions for Judges ==========
+
+// Profile form button action
+const completeBtn = document.querySelector("#profile .btn-small");
+completeBtn.addEventListener("click", () => {
+  alert("🎉 تم حفظ ملفك التجريبي! يمكنك تجربة الصفحات الأخرى الآن");
+});
+
+// Assessment answer interaction (simple demo)
+const assessmentBox = document.querySelector("#assessment .placeholder-box");
+assessmentBox.addEventListener("click", () => {
+  alert("📌 مثال فقط — التقييم الحقيقي سيكون تفاعلي بالكامل");
+});
 </script>
+
 </body>
 </html>
+
