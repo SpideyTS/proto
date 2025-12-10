@@ -1,732 +1,174 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>محرك الجينوم المهاري المتكيّف — نموذج تفاعلي</title>
-
-<!-- Google Font Arabic (Tajawal) -->
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>التقييم المهاري - Prototype</title>
 
 <style>
-:root{
-  --bg:#0A0F1C;
-  --bg-2:#0F1624;
-  --card: rgba(20,28,45,0.75);
-  --neon-blue:#00E0FF;
-  --neon-purple:#AA00FF;
-  --neon-cyan:#00FFF0;
-  --neon-pink:#FF006E;
-  --muted:#B4C7E7;
-  --glass: rgba(255,255,255,0.03);
-  --success:#00FF88;
-  --danger:#FF006E;
-}
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-  margin:0;padding:0;
-  font-family:"Tajawal",system-ui,-apple-system,Segoe UI,Roboto,Arial;
-  background:radial-gradient(circle at 10% 10%, rgba(0,224,255,0.03), transparent 8%), var(--bg);
-  color:#fff; direction:rtl;
-  -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
-}
+    body {
+        background: #0A0E14;
+        color: #fff;
+        font-family: 'Tajawal', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
 
-/* Layout */
-.app{ max-width:1200px; margin:20px auto; padding:16px; }
-header{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border-radius:12px; background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid rgba(255,255,255,0.03); position:sticky; top:12px; z-index:10; }
-.brand{ display:flex; gap:12px; align-items:center; }
-.logo{ width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple));display:flex;align-items:center;justify-content:center;font-weight:700;color:#041026;font-size:18px;box-shadow:0 6px 28px rgba(0,224,255,0.06); }
-.brand h1{margin:0;font-size:1rem}
-.brand p{margin:0;font-size:0.78rem;color:var(--muted)}
+    .container {
+        width: 90%;
+        max-width: 700px;
+        background: rgba(255,255,255,0.05);
+        border: 1px solid #00E5FF;
+        border-radius: 15px;
+        padding: 25px;
+        box-shadow: 0 0 20px #00E5FF55;
+        text-align: center;
+    }
 
-nav .nav-buttons{ display:flex; gap:8px; align-items:center; flex-wrap:wrap }
-.nav-btn{ background:transparent; border:1px solid rgba(255,255,255,0.04); color:var(--muted); padding:8px 12px; border-radius:999px; cursor:pointer; font-size:0.9rem }
-.nav-btn.primary{ background: linear-gradient(135deg,var(--neon-blue),var(--neon-purple)); color:#041026; box-shadow:0 8px 28px rgba(0,224,255,0.06); border:none; }
+    #questionBox {
+        margin-bottom: 25px;
+    }
 
-main{ margin-top:18px; }
-section{ display:none; padding:18px 6px; min-height:64vh; }
-section.active{ display:block; }
+    .option {
+        background: #111827;
+        border: 1px solid #BC13FE;
+        padding: 12px;
+        margin: 8px 0;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
 
-/* Landing */
-.hero{ display:grid; grid-template-columns:1fr 420px; gap:18px; align-items:center; }
-@media(max-width:920px){ .hero{ grid-template-columns:1fr; } .hero-visual{order:-1} }
-.hero-text h2{ font-size:2rem; margin:0 0 8px; line-height:1.05 }
-.highlight{ background:linear-gradient(90deg,var(--neon-blue),var(--neon-purple)); -webkit-background-clip:text; color:transparent }
-.hero-sub{ color:var(--muted); margin-top:10px; max-width:60ch; font-size:1rem }
-.actions{ margin-top:16px; display:flex; gap:12px; flex-wrap:wrap }
-.btn{ padding:10px 18px; border-radius:999px; border:1px solid rgba(255,255,255,0.04); cursor:pointer; font-weight:600 }
-.btn.primary{ background:linear-gradient(135deg,var(--neon-blue),var(--neon-purple)); color:#041026; box-shadow:0 10px 26px rgba(0,224,255,0.08) }
-.btn.ghost{ background:transparent; color:var(--neon-blue); border:1px solid rgba(0,224,255,0.15) }
-.hero-visual{ background:linear-gradient(180deg, rgba(0,224,255,0.02), rgba(170,0,255,0.02)); border-radius:12px; padding:20px; min-height:240px; display:flex; flex-direction:column; align-items:center; justify-content:center; box-shadow:0 0 40px rgba(0,0,0,0.5) }
-.brain{ width:140px;height:140px;border-radius:18px; display:flex;align-items:center;justify-content:center;font-size:3rem; color:var(--neon-cyan); text-shadow:0 0 18px rgba(0,255,240,0.3) }
+    .option:hover {
+        background: #BC13FE33;
+    }
 
-/* features & stats */
-.features{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px }
-@media(max-width:920px){ .features{ grid-template-columns:1fr } }
-.card{ background:var(--card); border-radius:12px; padding:14px; border:1px solid rgba(255,255,255,0.03); }
-.stats{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin-top:20px }
-@media(max-width:920px){ .stats{ grid-template-columns:repeat(2,1fr) } }
-.stat{ background:var(--card); padding:12px; border-radius:10px; text-align:center }
-.stat .num{ font-weight:700; color:var(--neon-cyan); font-size:1.3rem }
+    .option.selected {
+        background: #BC13FE88;
+        border-color: #00E5FF;
+    }
 
-/* layout two-col for dashboard */
-.two-col{ display:grid; grid-template-columns:1fr 420px; gap:18px }
-@media(max-width:920px){ .two-col{ grid-template-columns:1fr } }
+    .btn {
+        background: #00E5FF;
+        color: #000;
+        padding: 12px 20px;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 16px;
+    }
 
-/* Dashboard specific */
-.gauge{ font-size:2.2rem; font-weight:700; color:var(--neon-cyan) }
-.hero-small{ font-size:0.95rem; color:var(--muted) }
+    .progress {
+        width: 100%;
+        background: #1a1f29;
+        height: 10px;
+        margin-bottom: 25px;
+        border-radius: 6px;
+    }
 
-/* Skills network SVG */
-.network-wrap{ background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02)); padding:12px; border-radius:12px; }
-.network-svg{ width:100%; height:320px; display:block }
+    .progress-bar {
+        width: 0%;
+        height: 10px;
+        background: #BC13FE;
+        border-radius: 6px;
+    }
 
-/* pathway */
-.pathway{ background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(0,0,0,0.02)); padding:12px; border-radius:12px }
-.node{ padding:10px; background:rgba(255,255,255,0.02); border-radius:10px; margin:8px 0; display:flex; gap:10px; align-items:center; justify-content:space-between; border:1px solid rgba(255,255,255,0.03) }
-.node.locked{ opacity:0.5; filter:grayscale(8%) }
+    #resultsBox {
+        display: none;
+    }
 
-/* assessment */
-.question-card{ background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); padding:14px; border-radius:12px; border:1px solid rgba(0,224,255,0.06); margin-bottom:12px }
-.options{ display:flex; flex-direction:column; gap:10px; margin-top:10px }
-.option{ padding:10px; border-radius:10px; background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.03); cursor:pointer }
-.option:hover{ transform:translateY(-3px); box-shadow:0 10px 26px rgba(0,224,255,0.03) }
-.option.selected{ border-color:var(--neon-blue); box-shadow:0 0 18px rgba(0,224,255,0.08); background:rgba(0,224,255,0.03) }
-
-/* small */
-.muted{ color:var(--muted) }
-.chip{ padding:6px 10px; border-radius:999px; background:rgba(170,0,255,0.12); color:var(--muted); border:1px solid rgba(170,0,255,0.12) }
-
-/* footer */
-footer{ margin-top:18px; color:var(--muted); font-size:0.85rem; text-align:center }
-
-/* responsive */
-@media (max-width:560px){
-  .hero-visual{ padding:12px }
-  header{ padding:8px }
-  .logo{ width:40px;height:40px }
-}
+    .score {
+        font-size: 26px;
+        margin-top: 20px;
+        color: #00E5FF;
+        font-weight: bold;
+    }
 </style>
 </head>
-<body>
-<div class="app">
 
-  <header>
-    <div class="brand">
-      <div class="logo">🧬</div>
-      <div>
-        <h1>محرك الجينوم المهاري المتكيّف</h1>
-        <p class="muted">نموذج تفاعلي للرؤية والاختبار (بدون تسجيل)</p>
-      </div>
+<body>
+
+<div class="container">
+    <h2>🔍 التقييم المهاري القصير</h2>
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <nav class="nav-buttons">
-      <button class="nav-btn" onclick="nav('landing')">الرئيسية</button>
-      <button class="nav-btn" onclick="nav('assessment')">التقييم</button>
-      <button class="nav-btn" onclick="nav('dashboard')">اللوحة</button>
-      <button class="nav-btn" onclick="nav('pathway')">المسار</button>
-      <button class="nav-btn primary" onclick="startDemo()">ابدأ التجربة الآن</button>
-    </nav>
-  </header>
+    <div id="questionBox"></div>
+    <button class="btn" id="nextBtn">التالي</button>
 
-  <main>
-    <!-- Landing -->
-    <section id="landing" class="active">
-      <div class="hero">
-        <div>
-          <h2>استكشف <span class="highlight">جينومك المهاري</span> وحدّد مستقبلك المهني بذكاء</h2>
-          <p class="hero-sub">منصة ديناميكية تشخّص المهارات الحقيقية وتقترح مسارات تدريبية قابلة للتحديث بشكل دوري. النسخة التجريبية تتيح تجربة كاملة أمام الحكّام بدون تسجيل.</p>
-
-          <div class="actions">
-            <button class="btn primary" onclick="nav('assessment')">ابدأ التقييم المجاني</button>
-            <button class="btn ghost" onclick="nav('dashboard')">عرض لوحة النتائج</button>
-            <button class="btn ghost" onclick="loadSample()">تجربة سريعة (عينة)</button>
-          </div>
-
-          <div class="features" style="margin-top:18px">
-            <div class="card">
-              <div class="chip">تقييم ذكي</div>
-              <h3 style="margin:10px 0 6px">تقييم تطبيقي</h3>
-              <p class="muted">أسئلة عملية ومحاكاة قصيرة لقياس الأداء الحقيقي.</p>
-            </div>
-            <div class="card">
-              <div class="chip">مسار مخصص</div>
-              <h3 style="margin:10px 0 6px">خارطة تعلم متجددة</h3>
-              <p class="muted">خرائط تعلم تتحدّث تلقائيًا حسب النتائج وسوق العمل.</p>
-            </div>
-            <div class="card">
-              <div class="chip">توافق وطني</div>
-              <h3 style="margin:10px 0 6px">متكامل مع رؤى السوق</h3>
-              <p class="muted">يدعم قرارات التوظيف والتطوير المؤسسي.</p>
-            </div>
-          </div>
-
-          <div class="stats" style="margin-top:18px">
-            <div class="stat"><div class="num" data-counter="15000">+15,000</div><div class="muted">مستخدم نشط</div></div>
-            <div class="stat"><div class="num" data-counter="500">+500</div><div class="muted">مسار مهاري</div></div>
-            <div class="stat"><div class="num" data-counter="98">98%</div><div class="muted">معدل الرضا</div></div>
-            <div class="stat"><div class="num" data-counter="200">+200</div><div class="muted">شريك توظيف</div></div>
-          </div>
-
-        </div>
-
-        <div class="hero-visual card" aria-hidden="true">
-          <div class="brain">🧠</div>
-          <p class="muted" style="text-align:center; margin-top:8px">عرض حي لتغيّر جاهزيتك بعد كل تقييم.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Assessment -->
-    <section id="assessment">
-      <div class="card">
-        <h3>التقييم المهاري التفاعلي — نسخة قصير العرض</h3>
-        <p class="muted">أجب على 5 أسئلة سريعة (تستغرق ~3 دقائق). عند الضغط على "إرسال" ستتحدّث اللوحة فورًا.</p>
-
-        <div id="questionsContainer" style="margin-top:12px"></div>
-
-        <div style="margin-top:12px; display:flex; gap:10px; justify-content:flex-start;">
-          <button class="btn ghost" onclick="nav('landing')">العودة</button>
-          <button class="btn primary" onclick="submitAssessment()">إرسال النتائج وتحديث اللوحة</button>
-        </div>
-      </div>
-
-      <div class="card" style="margin-top:12px">
-        <h4>مهمة سريعة (ترتيب أولوية)</h4>
-        <p class="muted">اسحب المهام لترتيبها حسب الأولوية (المحاكاة لإظهار تأثير القرار).</p>
-        <div style="display:flex; gap:12px; margin-top:10px;">
-          <div id="dragPool" style="flex:1; min-height:120px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.03);">
-            <div draggable="true" class="drg" data-id="report" style="padding:8px;margin-bottom:8px;border-radius:8px;background:rgba(0,224,255,0.05);cursor:grab">إنهاء تقرير للإدارة</div>
-            <div draggable="true" class="drg" data-id="support" style="padding:8px;margin-bottom:8px;border-radius:8px;background:rgba(170,0,255,0.05);cursor:grab">حل مشكلة تقنية تؤثر على العملاء</div>
-            <div draggable="true" class="drg" data-id="meeting" style="padding:8px;margin-bottom:8px;border-radius:8px;background:rgba(255,0,110,0.05);cursor:grab">حضور اجتماع تخطيط استراتيجي</div>
-          </div>
-          <div id="dropArea" style="flex:1; min-height:120px; padding:10px; border-radius:8px; background:rgba(255,255,255,0.02); border:1px dashed rgba(255,255,255,0.03);">
-            <div style="color:var(--muted)">أسحب هنا لترتيب الأولويات</div>
-            <div id="dropList"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Dashboard -->
-    <section id="dashboard">
-      <div class="two-col">
-        <div>
-          <div class="card">
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <div>
-                <h3>لوحة الجينوم المهاري</h3>
-                <div class="muted">عرض تحليلي لحالة جاهزيتك ومقترحات التطوير</div>
-              </div>
-              <div style="text-align:center">
-                <div class="gauge" id="readiness">--/100</div>
-                <div class="muted" style="font-size:0.85rem">درجة الجاهزية الكلية</div>
-              </div>
-            </div>
-
-            <div style="margin-top:12px">
-              <canvas id="radarChart" height="260"></canvas>
-            </div>
-          </div>
-
-          <div class="card" style="margin-top:12px">
-            <h4>نقاط القوة والفجوات</h4>
-            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:8px">
-              <div style="flex:1; min-width:220px">
-                <h5>نقاط القوة</h5>
-                <ul id="strengthsList"></ul>
-              </div>
-              <div style="flex:1; min-width:220px">
-                <h5>الفجوات المقترحة</h5>
-                <ul id="gapsList"></ul>
-              </div>
-            </div>
-            <div style="margin-top:12px">
-              <button class="btn primary" onclick="nav('pathway')">عرض خارطة التعلّم</button>
-              <button class="btn ghost" onclick="downloadMockReport()">تحميل تقرير (تجريبي)</button>
-            </div>
-          </div>
-        </div>
-
-        <div>
-          <div class="card network-wrap">
-            <h4>رسم جينوم المهارات (شبكة + فقاعات)</h4>
-            <svg id="skillNetwork" class="network-svg" viewBox="0 0 600 320" preserveAspectRatio="xMidYMid meet"></svg>
-            <div class="muted" style="font-size:0.85rem;margin-top:8px">حجم الفقاعة يعكس قوة المهارة؛ اتصل بالفقاعات لرؤية التفاصيل.</div>
-          </div>
-
-          <div class="card" style="margin-top:12px">
-            <h4>الأدوار الموصى بها</h4>
-            <div id="rolesList"></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Pathway -->
-    <section id="pathway">
-      <div class="card pathway">
-        <h3>خارطة التعلّم المتجددة</h3>
-        <p class="muted">مسار نموذجي مُولد تلقائيًا بناءً على نتائج التقييم.</p>
-
-        <div id="pathNodes" style="margin-top:12px"></div>
-
-        <div style="margin-top:12px">
-          <button class="btn primary" onclick="simulateStudy()">محاكاة إكمال وحدة (تجريبي)</button>
-          <button class="btn ghost" onclick="nav('dashboard')">العودة للوحة</button>
-        </div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer>© 2025 محرك الجينوم المهاري المتكيّف — نموذج تجريبي للعروض</footer>
+    <div id="resultsBox">
+        <h3>📊 نتيجة التقييم</h3>
+        <p class="score" id="scoreText"></p>
+        <button class="btn" onclick="location.reload()">إعادة التقييم</button>
+    </div>
 </div>
 
 <script>
-/* ---------------------------
-   State
----------------------------- */
-const state = {
-  user: { name:'متدرّب تجريبي' },
-  assessmentAnswers: {},
-  dragOrder: [],
-  skills: [
-    { id:'analytical', name:'التفكير التحليلي', score:85 },
-    { id:'technical', name:'المهارات التقنية', score:78 },
-    { id:'leadership', name:'القيادة', score:65 },
-    { id:'communication', name:'التواصل', score:90 },
-    { id:'problem', name:'حل المشكلات', score:82 },
-    { id:'ai', name:'الذكاء الاصطناعي', score:58 },
-    { id:'data', name:'تحليلات البيانات', score:72 }
-  ],
-  readiness: 87,
-  roles: [
-    { title:'محلل بيانات أول', match:92, skills:['SQL','Python','Tableau'] },
-    { title:'مهندس تعلم آلي مبتدئ', match:78, skills:['Python','ML Basics'] },
-    { title:'مدير مشاريع تقنية', match:74, skills:['Agile','Leadership'] }
-  ],
-  pathway: [
-    { id:1, title:'مقدمة في علم البيانات', status:'complete', hours:8 },
-    { id:2, title:'أساسيات Excel للتحليل', status:'complete', hours:6 },
-    { id:3, title:'Python أساسيات', status:'current', hours:25 },
-    { id:4, title:'تصور البيانات - Tableau', status:'locked', hours:20 },
-    { id:5, title:'مشروع تطبيقي 1', status:'locked', hours:40 }
-  ]
-};
-
-/* ---------------------------
-   Navigation
----------------------------- */
-function nav(id){
-  document.querySelectorAll('main section').forEach(s=>s.classList.remove('active'));
-  const el = document.getElementById(id);
-  if(el) el.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='dashboard') renderDashboard();
-  if(id==='pathway') renderPathway();
-}
-
-/* ---------------------------
-   Counters
----------------------------- */
-document.querySelectorAll('[data-counter]').forEach(el=>{
-  const target = parseInt(el.getAttribute('data-counter'),10) || 0;
-  let cur=0;
-  const step = Math.max(1, Math.floor(target/40));
-  const iv = setInterval(()=>{ cur += step; if(cur>=target){ el.textContent = target>=1000 ? '+'+target.toLocaleString() : target; clearInterval(iv); } else { el.textContent = target>=1000 ? '+'+cur.toLocaleString() : cur; } }, 25);
-});
-
-/* ---------------------------
-   Assessment: build questions
----------------------------- */
 const questions = [
-  { id:'q1', q:'شركة تواجه انخفاضاً في المبيعات. ما الخطوة الأولى؟', options:[
-    {id:'a1', text:'تحليل بيانات المبيعات لتحديد بداية الانخفاض', score:{analytical:10}},
-    {id:'a2', text:'إطلاق حملة تسويقية فورية', score:{marketing:5}},
-    {id:'a3', text:'تخفيض الأسعار لجذب العملاء', score:{pricing:3}},
-    {id:'a4', text:'الاستعانة باستشاري خارجي', score:{outsourcing:2}}
-  ]},
-  { id:'q2', q:'أي لغة تُستخدم عادة في تطبيقات التحليل والذكاء؟', options:[
-    {id:'b1', text:'HTML & CSS', score:{technical:1}},
-    {id:'b2', text:'Python & R', score:{technical:10, data:8}},
-    {id:'b3', text:'PHP & Ruby', score:{technical:2}},
-    {id:'b4', text:'Swift & Kotlin', score:{technical:2}}
-  ]},
-  { id:'q3', q:'اختر الخيار الأفضل للتعامل مع مشروع متأخر زمنياً:', options:[
-    {id:'c1', text:'إعادة جدولة المراحل مع موارد إضافية', score:{leadership:8}},
-    {id:'c2', text:'تأجيل بعض الميزات وإطلاق MVP', score:{strategic:7}},
-    {id:'c3', text:'زيادة ساعات العمل بدون تغيير الخطة', score:{productivity:2}}
-  ]},
-  { id:'q4', q:'ما مستوى ثقتك في تحليل البيانات؟', options:[
-    {id:'d1', text:'مبتدئ', value:1},
-    {id:'d2', text:'متوسط', value:3},
-    {id:'d3', text:'متقدم', value:4},
-    {id:'d4', text:'خبير', value:5}
-  ]},
-  { id:'q5', q:'هل تفضل التعلم:', options:[
-    {id:'e1', text:'مكثف (3-6 أشهر)', value:'intensive'},
-    {id:'e2', text:'متوسط (6-12 شهر)', value:'medium'},
-    {id:'e3', text:'مرن (حسب الوقت)', value:'flex'}
-  ]}
+    { q: "كيف تتعامل مع مشكلة تقنية غير معروفة سابقًا؟", options: ["أبحث عن حل وأجرّب", "أنتظر تعليمات", "أتجنبها"], score: [3,1,0] },
+    { q: "كيف تصف مستوى معرفتك الرقمية؟", options: ["متقدم", "متوسط", "مبتدئ"], score: [3,2,1] },
+    { q: "إذا واجهت مهمة تحتاج لتحليل بيانات، ماذا تفعل؟", options: ["أحللها بنماذج", "أطلب من أحد آخر", "أتجاوز المهمة"], score: [3,2,0] },
+    { q: "هل تتابع تقنيات جديدة باستمرار؟", options: ["نعم دائمًا", "أحيانًا", "نادراً"], score: [3,2,1] },
+    { q: "كيف تقيّم مهارتك في اتخاذ القرار؟", options: ["ممتازة", "جيدة", "أحتاج تطوير"], score: [3,2,0] }
 ];
 
-function buildQuestionsUI(){
-  const container = document.getElementById('questionsContainer');
-  container.innerHTML = '';
-  questions.forEach((q, idx)=>{
-    const card = document.createElement('div'); card.className='question-card';
-    let html = `<div style="display:flex;justify-content:space-between;align-items:center"><strong>السؤال ${idx+1}</strong><span class="muted">${q.q}</span></div>`;
-    html += `<div class="options" id="opts-${q.id}"></div>`;
-    card.innerHTML = html;
-    container.appendChild(card);
-    const opts = document.getElementById(`opts-${q.id}`);
-    q.options.forEach(opt=>{
-      const o = document.createElement('div'); o.className='option'; o.innerText = opt.text;
-      o.onclick = ()=>{ selectOption(q.id, opt.id); o.parentElement.querySelectorAll('.option').forEach(x=>x.classList.remove('selected')); o.classList.add('selected'); };
-      opts.appendChild(o);
+let index = 0;
+let selected = -1;
+let totalScore = 0;
+
+const qBox = document.getElementById("questionBox");
+const progressBar = document.getElementById("progressBar");
+const nextBtn = document.getElementById("nextBtn");
+
+function renderQuestion() {
+    let q = questions[index];
+    qBox.innerHTML = `
+        <h3>${q.q}</h3>
+        ${q.options.map((op, i)=>`
+            <div class="option" onclick="selectOption(${i})">${op}</div>
+        `).join('')}
+    `;
+    updateProgress();
+}
+
+function selectOption(i) {
+    selected = i;
+    document.querySelectorAll('.option').forEach((el, idx)=>{
+        el.classList.toggle("selected", idx === i);
     });
-  });
 }
 
-/* store selection */
-function selectOption(qid, oid){
-  state.assessmentAnswers[qid] = oid;
-}
+nextBtn.onclick = ()=>{
+    if(selected === -1) return alert("اختر إجابة أولاً");
+    totalScore += questions[index].score[selected];
+    selected = -1;
 
-/* Drag & Drop for priority */
-function enableDrag(){
-  const drags = document.querySelectorAll('.drg');
-  drags.forEach(d=>{
-    d.addEventListener('dragstart', e=>{
-      e.dataTransfer.setData('text/plain', d.dataset.id);
-      setTimeout(()=>d.style.opacity='0.4', 0);
-    });
-    d.addEventListener('dragend', e=>{
-      d.style.opacity='1';
-    });
-  });
-  const dropArea = document.getElementById('dropArea');
-  dropArea.addEventListener('dragover', e=>{ e.preventDefault(); dropArea.style.borderColor='rgba(0,224,255,0.25)'; });
-  dropArea.addEventListener('dragleave', e=>{ dropArea.style.borderColor='rgba(255,255,255,0.03)'; });
-  dropArea.addEventListener('drop', e=>{
-    e.preventDefault(); dropArea.style.borderColor='rgba(255,255,255,0.03)';
-    const id = e.dataTransfer.getData('text/plain');
-    const node = document.querySelector(`.drg[data-id="${id}"]`);
-    if(!node) return;
-    // add clone to dropList
-    const clone = node.cloneNode(true);
-    clone.style.cursor='default'; clone.draggable=false; clone.style.marginBottom='6px';
-    document.getElementById('dropList').appendChild(clone);
-    state.dragOrder.push(id);
-  });
-}
-
-/* ---------------------------
-   Assessment submit => calc mock results
----------------------------- */
-function submitAssessment(){
-  // ensure at least defaults
-  if(!state.assessmentAnswers['q1']) state.assessmentAnswers['q1']='a1';
-  if(!state.assessmentAnswers['q2']) state.assessmentAnswers['q2']='b2';
-  if(!state.assessmentAnswers['q4']) state.assessmentAnswers['q4']='d2';
-
-  // simple scoring logic: base readiness 50
-  let readiness = 50;
-  // q1
-  if(state.assessmentAnswers['q1']==='a1') readiness += 10; // analytical good
-  // q2
-  if(state.assessmentAnswers['q2']==='b2') readiness += 12; // technical
-  // q3
-  if(state.assessmentAnswers['q3']==='c1') readiness += 6;
-  if(state.assessmentAnswers['q3']==='c2') readiness += 8;
-  // q4 self assess
-  const q4map = { d1: -3, d2: 0, d3: 5, d4: 10 };
-  readiness += (q4map[state.assessmentAnswers['q4']] || 0);
-  // drag order: reward if report first then support
-  const ideal = ['report','support','meeting'];
-  let match=0;
-  for(let i=0; i<Math.min(state.dragOrder.length,3); i++) if(state.dragOrder[i]===ideal[i]) match++;
-  readiness += match*3;
-
-  readiness = Math.max(30, Math.min(98, Math.round(readiness)));
-  // update skills array moderately
-  // boost technical if python chosen
-  if(state.assessmentAnswers['q2']==='b2'){
-    updateSkill('technical', +6);
-    updateSkill('data', +5);
-    updateSkill('ai', +4);
-  }
-  if(state.assessmentAnswers['q1']==='a1') updateSkill('analytical', +5);
-  if(state.assessmentAnswers['q3']==='c1') updateSkill('leadership', +4);
-  // if self-assess high
-  if(['d3','d4'].includes(state.assessmentAnswers['q4'])) updateSkill('data', +3);
-
-  // set readiness
-  state.readiness = readiness;
-  // regenerate roles match partially based on readiness
-  state.roles = state.roles.map(r=>{
-    const delta = Math.round((state.readiness - 70) * 0.6);
-    return {...r, match: Math.max(40, Math.min(100, r.match + delta))};
-  });
-
-  // update pathway suggestion: unlock next if readiness improved
-  if(state.readiness>80) state.pathway.forEach(p=>{ if(p.status==='locked') p.status='current'; });
-
-  // show feedback and update dashboard
-  showToast('تمت معالجة إجاباتك — تحديث اللوحة الآن');
-  renderDashboard();
-  nav('dashboard');
-}
-
-/* helper update skill by id (id corresponds to state.skills) */
-function updateSkill(id, delta){
-  const s = state.skills.find(x=>x.id===id);
-  if(s){ s.score = Math.min(98, Math.max(20, s.score + delta)); }
-}
-
-/* ---------------------------
-   Dashboard rendering
----------------------------- */
-let radarChart = null;
-function renderDashboard(){
-  // readiness
-  document.getElementById('readiness').innerText = state.readiness + '/100';
-
-  // strengths: top 3 skills
-  const sorted = [...state.skills].sort((a,b)=>b.score-a.score);
-  const strengths = sorted.slice(0,3);
-  const gaps = sorted.slice(-3).reverse();
-
-  const sl = document.getElementById('strengthsList'); sl.innerHTML='';
-  strengths.forEach(s=>{ const li = document.createElement('li'); li.innerText = `${s.name} — ${s.score}%`; sl.appendChild(li); });
-
-  const gl = document.getElementById('gapsList'); gl.innerHTML='';
-  gaps.forEach(s=>{ const li = document.createElement('li'); li.innerHTML = `${s.name} — ${s.score}% <button class="btn ghost" style="margin-right:8px" onclick="suggestPathFor('${s.id}')">ابدأ التعلم</button>`; gl.appendChild(li); });
-
-  // radar chart
-  const labels = state.skills.slice(0,5).map(s=>s.name);
-  const dataVals = state.skills.slice(0,5).map(s=>s.score);
-  const ctx = document.getElementById('radarChart').getContext('2d');
-  if(radarChart) radarChart.destroy();
-  radarChart = new Chart(ctx, {
-    type: 'radar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'درجة المهارة',
-        data: dataVals,
-        backgroundColor: 'rgba(0,224,255,0.12)',
-        borderColor: 'rgba(0,224,255,0.95)',
-        pointBackgroundColor: 'rgba(170,0,255,0.9)',
-        borderWidth: 2,
-        fill: true
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        r: {
-          beginAtZero: true,
-          max:100,
-          grid: { color: 'rgba(255,255,255,0.03)' },
-          angleLines:{ color:'rgba(255,255,255,0.02)' }
-        }
-      },
-      plugins: { legend:{ display:false } }
+    index++;
+    if(index < questions.length) {
+        renderQuestion();
+    } else {
+        showResults();
     }
-  });
-
-  // render network (SVG)
-  renderSkillNetwork();
-
-  // roles list
-  const rolesDiv = document.getElementById('rolesList'); rolesDiv.innerHTML='';
-  state.roles.forEach(r=>{
-    const card = document.createElement('div'); card.style.padding='8px'; card.style.border='1px solid rgba(255,255,255,0.03)'; card.style.borderRadius='8px'; card.style.marginBottom='8px';
-    card.innerHTML = `<strong>${r.title}</strong><div class="muted">التطابق: ${r.match}%</div><div style="margin-top:8px"><button class="btn ghost" onclick="buildRolePath('${r.title}')">بناء خارطة تطوير</button></div>`;
-    rolesDiv.appendChild(card);
-  });
-}
-
-/* render skill network: combination of network nodes and bubble sizes */
-function renderSkillNetwork(){
-  const svg = document.getElementById('skillNetwork');
-  svg.innerHTML = '';
-  // draw simple force-like layout (positions predefined for stability)
-  const positions = [
-    {x:500,y:60},{x:420,y:180},{x:320,y:40},{x:220,y:160},{x:120,y:40},{x:100,y:220},{x:260,y:260}
-  ];
-  // map skills to positions
-  state.skills.forEach((s, idx)=>{
-    const pos = positions[idx % positions.length];
-    const size = Math.max(12, Math.round((s.score/100)*48)); // bubble radius
-    // draw circle
-    const ns = 'http://www.w3.org/2000/svg';
-    const g = document.createElementNS(ns, 'g');
-    g.setAttribute('transform', `translate(${pos.x},${pos.y})`);
-    // circle
-    const c = document.createElementNS(ns, 'circle');
-    c.setAttribute('r', size);
-    c.setAttribute('fill', idx%2===0 ? 'rgba(0,224,255,0.18)' : 'rgba(170,0,255,0.14)');
-    c.setAttribute('stroke', idx%2===0 ? 'rgba(0,224,255,0.7)' : 'rgba(170,0,255,0.7)');
-    c.setAttribute('stroke-width', '2');
-    c.style.cursor='pointer';
-    // on hover show tooltip-like element (simple)
-    c.addEventListener('mouseenter', (e)=>{
-      showNodeTooltip(s, pos.x, pos.y);
-    });
-    c.addEventListener('mouseleave', hideNodeTooltip);
-    c.addEventListener('click', ()=>{ suggestPathFor(s.id); });
-    g.appendChild(c);
-    // label
-    const t = document.createElementNS(ns, 'text');
-    t.setAttribute('y', size + 16);
-    t.setAttribute('text-anchor','middle');
-    t.setAttribute('font-size','11');
-    t.setAttribute('fill','white');
-    t.textContent = s.name;
-    g.appendChild(t);
-    svg.appendChild(g);
-  });
-}
-
-/* tooltip element for svg */
-let currentTooltip = null;
-function showNodeTooltip(skill, x, y){
-  hideNodeTooltip();
-  const svg = document.getElementById('skillNetwork');
-  const ns = 'http://www.w3.org/2000/svg';
-  const g = document.createElementNS(ns, 'g');
-  g.setAttribute('id','tooltip');
-  const rect = document.createElementNS(ns,'rect');
-  rect.setAttribute('x', x-90);
-  rect.setAttribute('y', y-70);
-  rect.setAttribute('width',180);
-  rect.setAttribute('height',44);
-  rect.setAttribute('rx',8);
-  rect.setAttribute('fill','rgba(4,12,24,0.9)');
-  rect.setAttribute('stroke','rgba(0,224,255,0.12)');
-  rect.setAttribute('stroke-width','1');
-  const text = document.createElementNS(ns,'text');
-  text.setAttribute('x', x);
-  text.setAttribute('y', y-48);
-  text.setAttribute('text-anchor','middle');
-  text.setAttribute('font-size','12');
-  text.setAttribute('fill','white');
-  text.textContent = `${skill.name} · ${skill.score}%`;
-  g.appendChild(rect);
-  g.appendChild(text);
-  svg.appendChild(g);
-  currentTooltip = g;
-}
-function hideNodeTooltip(){ if(currentTooltip){ currentTooltip.remove(); currentTooltip=null; } }
-
-/* suggestion handler */
-function suggestPathFor(skillId){
-  alert('اقتراح مسار لتطوير المهارة: ' + skillId + '\n(في النسخة التجريبية يُفتح المسار المقترح في لوحة المسار)');
-  // adjust pathway to recommend related modules (simple)
-  // for demo: if ai then unlock ML basics
-  if(skillId==='ai') {
-    state.pathway.forEach(p=>{ if(p.title.includes('التعلم الآلي')) p.status='current'; });
-  }
-  renderPathway();
-  nav('pathway');
-}
-
-/* build role path */
-function buildRolePath(title){
-  alert('جارٍ بناء خارطة تطوير لوظيفة: ' + title + ' (تجريبي)');
-  nav('pathway');
-}
-
-/* download mock report */
-function downloadMockReport(){
-  alert('تحميل تقرير PDF (محاكاة) — الملخص: جاهزيتك ' + state.readiness + '/100');
-}
-
-/* ---------------------------
-   Pathway rendering
----------------------------- */
-function renderPathway(){
-  const container = document.getElementById('pathNodes');
-  container.innerHTML = '';
-  state.pathway.forEach(node=>{
-    const div = document.createElement('div');
-    div.className = 'node ' + (node.status==='locked' ? 'locked' : '');
-    div.innerHTML = `<div>
-      <strong>${node.title}</strong>
-      <div class="muted" style="font-size:0.85rem">${node.hours} ساعة • ${node.status}</div>
-    </div>
-    <div>
-      ${node.status!=='locked' ? `<button class="btn ghost" onclick="viewModule(${node.id})">عرض</button> <button class="btn primary" onclick="completeModule(${node.id})">ابدأ</button>` : `<button class="btn ghost" onclick="unlockHint()">قفل</button>`}
-    </div>`;
-    container.appendChild(div);
-  });
-}
-function viewModule(id){ const node = state.pathway.find(n=>n.id===id); alert(`${node.title}\nالمدة: ${node.hours} ساعة\nحالة: ${node.status}`); }
-function completeModule(id){
-  const node = state.pathway.find(n=>n.id===id);
-  node.status='complete';
-  const idx = state.pathway.findIndex(n=>n.id===id);
-  if(state.pathway[idx+1]) state.pathway[idx+1].status='current';
-  renderPathway(); showToast('اكتملت وحدة: ' + node.title);
-  renderDashboard();
-}
-function unlockHint(){ alert('الوحدة مقفلة في النسخة التجريبية. أكمل الوحدات المتاحة لفتحها.') }
-function simulateStudy(){ const cur = state.pathway.find(p=>p.status==='current'); if(cur) completeModule(cur.id); else alert('لا توجد وحدة حالية قابلة للبدء'); }
-
-/* ---------------------------
-   Roles & sample load
----------------------------- */
-function loadSample(){
-  // set sample higher scores and readiness
-  state.skills.forEach(s=>{ s.score = Math.min(98, s.score + Math.floor(Math.random()*6)); });
-  state.readiness = Math.min(98, state.readiness + 6);
-  state.roles = state.roles.map(r=> ({...r, match: Math.min(100, r.match + 4)}));
-  renderDashboard();
-  showToast('تم تحميل عينة بيانات تجريبية — يمكنك الآن عرض اللوحة');
-  nav('dashboard');
-}
-
-/* ---------------------------
-   Utility: small toast
----------------------------- */
-function showToast(msg){
-  const t = document.createElement('div');
-  t.style.position='fixed'; t.style.left='50%'; t.style.top='12px'; t.style.transform='translateX(-50%)';
-  t.style.background='linear-gradient(90deg,var(--neon-blue),var(--neon-purple))'; t.style.color='#041026';
-  t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.boxShadow='0 10px 30px rgba(0,0,0,0.4)'; t.style.zIndex=9999;
-  t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(()=> t.style.transition='opacity 400ms', 100);
-  setTimeout(()=> t.remove(), 2200);
-}
-
-/* ---------------------------
-   Init
----------------------------- */
-function init(){
-  buildQuestionsUI();
-  enableDrag();
-  renderDashboard();
-  renderPathway();
-  // small click handlers for nav buttons in header already set via onclick
-}
-init();
-
-/* ---------------------------
-   Exports (for convenience)
----------------------------- */
-window.startDemo = function(){
-  // quick go to assessment
-  nav('assessment');
-  showToast('تم إنشاء جلسة تجريبية — ابدأ التقييم');
 };
+
+function updateProgress() {
+    progressBar.style.width = ((index / questions.length) * 100) + "%";
+}
+
+function showResults() {
+    qBox.style.display = "none";
+    nextBtn.style.display = "none";
+    document.getElementById("resultsBox").style.display = "block";
+    document.getElementById("scoreText").innerHTML = `نتيجتك: ${totalScore} / 15`;
+}
+
+renderQuestion();
 </script>
+
 </body>
 </html>
